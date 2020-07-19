@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Textures Extractor")]
 [assembly: AssemblyDescription("Автоматическое копирование требуемых картой текстур")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Team-stalker.ucoz.com")]
+[assembly: AssemblyCompany("TSMP")]
 [assembly: AssemblyProduct("TexturesExtractor")]
 [assembly: AssemblyCopyright("Copyright Team-stalker ©  2019")]
 [assembly: AssemblyTrademark("")]
