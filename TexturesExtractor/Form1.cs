@@ -13,7 +13,7 @@ using System.Windows.Forms;
 // 3) Путь к игровому лог файлу - Версия игры должна быть строго 1.0007 (скачать). На данной версии патча, 
 // Вы должны запустить карту БЕЗ ТЕКСТУР, как карта загрузилась, сохраните лог(flush) и установите путь к этому файлу.
 // Далее как все настроили, нажмите Старт. По окончанию работы будет выведена вся информация.
-// Также в директории с программой в случаи ошибок копирования или отсутствия текстур (В папке источника), будет выведен весь путь до файла.
+// Также в директории с программой в случае ошибок копирования или отсутствия текстур (В папке источника), будет выведен весь путь до файла.
 // Добавлена возможность поиска недостающих bump файлов (! auto-generated bump map:)
 
 namespace TexturesExtractor
@@ -122,48 +122,48 @@ namespace TexturesExtractor
 
             foreach (string str in File.ReadLines(log_dir.Text, Encoding.GetEncoding(1251)))
             {
-                // найдем строку что нет такой текстуры - для лога игры
+                // Can't find texture 'ghost_particles\amik_hit_fx\water_splash\water_splash_amik'
                 if (str.Contains("Can't find texture"))
                 {
-                    // Откроем нашу папку с текстурами и найдем в ней нашу текстуру
                     try
                     {
                         string filename = str.Replace("Can't find texture ", "").Replace("'", "").Replace("[", "").Replace("]", "");
-                        // оставим только путь к папке
-                        string dir = filename.Remove(filename.IndexOf("\\"));
+                        // оставим только путь к папке. Последнее после слеша - имя файла
+                        string dir = filename.TrimEnd('\\');
                         // проверим существует ли директория
-                        if (!Directory.Exists(Path.GetDirectoryName(out_dir.Text + "\\" + dir + "\\")))
+                        if (!Directory.Exists(Path.GetDirectoryName(out_dir.Text + "\\" + dir)))
                         {
-                            Directory.CreateDirectory(Path.GetDirectoryName(out_dir.Text + "\\" + dir + "\\"));
+                            Directory.CreateDirectory(Path.GetDirectoryName(out_dir.Text + "\\" + dir));
                         }
-                        File.Copy(remote_dir.Text + "\\" + filename + ".dds", out_dir.Text + "\\" + filename + ".dds", true); // разрешим перезаписать файл. 
+                        File.Copy(remote_dir.Text + "\\" + filename + ".dds", out_dir.Text + "\\" + filename + ".dds", true);
                         ok++;
                     }
                     catch (Exception ex)
                     {
                         error++;
-                        Log(ex.Message + Environment.NewLine);
+                        Log("[Can't find texture] " + ex.Message + Environment.NewLine);
                     }
                 }
-                else if (str.Contains("! auto-generated bump map:")) // ! auto-generated bump map: cars\cars_uazreshetka_bump
+                // ! auto-generated bump map: cars\cars_uazreshetka_bump
+                else if (str.Contains("! auto-generated bump map:")) 
                 {
                     try
                     {
                         var filename = str.Replace("! auto-generated bump map: ", "").Replace("'", "").Replace("[", "").Replace("]", "");
                         // оставим только путь к папке
-                        string dir = filename.Remove(filename.IndexOf("\\"));
+                        string dir = filename.TrimEnd('\\');
                         // проверим существует ли директория
                         if (!Directory.Exists(Path.GetDirectoryName(out_dir.Text + "\\" + dir + "\\")))
                         {
                             Directory.CreateDirectory(Path.GetDirectoryName(out_dir.Text + "\\" + dir + "\\"));
                         }
-                        File.Copy(remote_dir.Text + "\\" + filename + ".dds", out_dir.Text + "\\" + filename + ".dds", true); // разрешим перезаписать файл. 
+                        File.Copy(remote_dir.Text + "\\" + filename + ".dds", out_dir.Text + "\\" + filename + ".dds", true);
                         ok++;
                     }
                     catch (Exception ex)
                     {
                         error++;
-                        Log(ex.Message + Environment.NewLine);
+                        Log("[auto-generated bump map] " + ex.Message + Environment.NewLine);
                     }
                 }
                 // thm файлы
@@ -192,7 +192,7 @@ namespace TexturesExtractor
                         error++;
                         Log(ex.Message + Environment.NewLine);
                     }
-                } 
+                }       
                 //  | | cannot find tga texture: c:\sdk\rawdata\textures\tile\tile_mortar_01.thm
                 // путь для tga файлов
                 else if (str.Contains("cannot find tga texture: "))
@@ -236,7 +236,7 @@ namespace TexturesExtractor
 
         private void btnInfo_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Программа для автоматического поиска и копирования требуемых картой - текстур\nРазработано командой TSMP", "О Программе", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Программа для автоматического поиска и копирования требуемых картой - текстур\nРазработано командой Team-stalker", "О Программе", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
